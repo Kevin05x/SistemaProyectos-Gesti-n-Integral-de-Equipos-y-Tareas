@@ -1,0 +1,117 @@
+﻿@model SistemaProyectos.Models.Tarea
+
+@{
+    ViewData["Title"] = "Eliminar una tarea";
+}
+
+@section Styles {
+    <style>
+        body {
+            background-color: #E6E6FA;
+        }
+    </style>
+}
+
+<h1>@ViewData["Title"]</h1>
+<hr />
+
+<h2 class="text-danger text-center">¿Estás seguro que deseas eliminar esta tarea?</h2>
+
+<div class="text-center">
+    <label>La tarea se eliminará con sus comentarios correspondientes</label>
+</div>
+
+<hr />
+
+<div class="row">
+    <div class="col-6 border-end border-black">
+        <h4 class="text-center">Información de las tareas</h4>
+        
+        <table class="table table-bordered table-striped">
+            <tbody>
+                <tr>
+                    <th class="bg-info text-white">Título</th>
+                    <td>@Model.Titulo</td>
+                </tr>
+                <tr>
+                    <th class="bg-info text-white">Descripción</th>
+                    <td>@Model.Descripcion</td>
+                </tr>
+                <tr>
+                    <th class="bg-info text-white">Estado</th>
+                    <td>@Model.Estado</td>
+                </tr>
+                <tr>
+                    <th class="bg-info text-white">Fecha inicio</th>
+                    <td>@Model.FechaInicio.ToString("dd/MM/yyyy")</td>
+                </tr>
+                <tr>
+                    <th class="bg-info text-white">Fecha fin</th>
+                    <td>@Model.FechaFin.ToString("dd/MM/yyyy")</td>
+                </tr>
+                <tr>
+                    <th class="bg-info text-white">Asignado a</th>
+                    <td>@Model.Usuario?.NombreCompleto</td>
+                </tr>
+                <tr>
+                    <th class="bg-info text-white">Prioridad</th>
+                    <td>@Model.Prioridad</td>
+                </tr>
+                <tr>
+                    <th class="bg-info text-white">Proyecto</th>
+                    <td>@Model.Proyecto?.NombreProyecto</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="col-6">
+        <h4 class="text-center">Comentarios de la tarea</h4>
+        
+        <div class="table-responsive" style="height: 400px; overflow-y:auto;">
+            @if (Model.Comentarios != null && Model.Comentarios.Any())
+            {
+                @foreach (var comment in Model.Comentarios)
+                {
+                    <div class="box-shadow card shadow-lg container-fluid rounded border- mb-2">
+                        <div class="p-2 bg-light d-flex justify-content-between align-items-center rounded col">
+                            <div>
+                                <span class="rounded-pill bg-info-subtle p-1 fw-bold">
+                                    <i class="fa-regular fa-circle-user"></i> @comment.Usuario?.NombreCompleto
+                                </span>
+                                <span class="text-bg-light text-secondary p-1">
+                                    @comment.FechaRegistro
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="card border-light box-shadow card rounded p-3">
+                            <span>@comment.Contenido</span>
+                        </div>
+                    </div>
+                }
+            }
+            else
+            {
+                <p class="text-muted text-center">No hay comentarios para esta tarea.</p>
+            }
+        </div>
+
+    </div>
+</div>  
+<hr />
+<div class="text-center">
+    <form asp-action="Delete">
+        <input type="hidden" asp-for="TareaID" />
+        <button type="submit" class="btn btn-danger">
+            <i class="fa-solid fa-trash"></i>&nbsp; Eliminar
+        </button>
+    </form>
+    
+</div>
+
+<div class="col-2">
+    <a asp-action="Index" class="btn btn-dark">
+        <i class="fa-solid fa-backward"></i>&nbsp; Regresar
+    </a>
+</div>

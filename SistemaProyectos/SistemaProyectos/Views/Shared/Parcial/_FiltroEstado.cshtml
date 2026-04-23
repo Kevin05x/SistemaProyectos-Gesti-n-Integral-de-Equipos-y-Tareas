@@ -1,0 +1,16 @@
+﻿@model string
+
+<form method="get" class="d-flex">
+    <div class="col-8 text-center">
+        <select name="estado" style="background: #FFB74D; color: white;" class="form-select">
+            <option value="">Todos</option>
+            <option value="Pendiente" selected="@(ViewBag.EstadoSeleccionado == "Pendiente")">Pendiente</option>
+            <option value="En Progreso" selected="@(ViewBag.EstadoSeleccionado == "En Progreso")">En Progreso</option>
+            <option value="Finalizado" selected="@(ViewBag.EstadoSeleccionado == "Finalizado")">Finalizado</option>
+        </select>
+    </div>
+    <div class="col-3">
+        <button type="submit" class="btn btn-danger">Filtrar</button>
+    </div>
+</form>
+

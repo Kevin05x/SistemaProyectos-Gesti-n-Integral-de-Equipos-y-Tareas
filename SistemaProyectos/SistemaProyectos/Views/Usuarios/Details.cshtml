@@ -1,0 +1,60 @@
+﻿@model SistemaProyectos.Models.Usuario
+
+@{
+    ViewData["Title"] = "Detalles del usuario";
+}
+
+@section Styles {
+    <style>
+        body {
+            background-color: #E6E6FA;
+        }
+    </style>
+}
+
+<h1>@ViewData["Title"]</h1>
+<hr />
+<h4 class="text-center">Información del usuario</h4>
+<div class="row" style="display:block; justify-self: center;">
+    <div>
+        <br />
+        <table class="table table-bordered table-striped">
+            <tbody>
+                <tr>
+                    <th class="bg-info text-white">@Html.DisplayNameFor(model => model.NombreUsuario)</th>
+                    <td>@Html.DisplayFor(model => model.NombreUsuario)</td>
+                </tr>
+                <tr>
+                    <th class="bg-info text-white">@Html.DisplayNameFor(model => model.NombreCompleto)</th>
+                    <td>@Html.DisplayFor(model => model.NombreCompleto)</td>
+                </tr>
+                <tr>
+                    <th class="bg-info text-white">@Html.DisplayNameFor(model => model.Correo)</th>
+                    <td>@Html.DisplayFor(model => model.Correo)</td>
+                </tr>
+                <tr>
+                    <th class="bg-info text-white">@Html.DisplayNameFor(model => model.Rol)</th>
+                    <td>@Html.DisplayFor(model => model.Rol)</td>
+                </tr>
+                <tr>
+                    <th class="bg-info text-white">@Html.DisplayNameFor(model => model.FechaRegistro)</th>
+                    <td>@Html.DisplayFor(model => model.FechaRegistro)</td>
+                </tr>
+            </tbody>
+        </table>
+        <hr />
+        <div class="text-center" style="display:block; justify-self: center;">
+            <a asp-action="Edit" asp-route-id="@Model?.UsuarioID" class="btn btn-warning">
+                <i class="fa-solid fa-pen-to-square"></i>&nbsp; Editar
+            </a>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div style="display:block; justify-self: left;">
+        <a asp-action="Index" class="btn btn-dark">
+            <i class="fa-solid fa-backward"></i>&nbsp; Regresar
+        </a>
+    </div>
+</div>

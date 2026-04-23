@@ -1,0 +1,110 @@
+﻿@model IEnumerable<SistemaProyectos.Models.Tarea>
+@{
+    ViewData["Title"] = "Vista KanBan";
+}
+
+@section Styles {
+    <style>
+        body {
+            background-color: #E6E6FA;
+        }
+    </style>
+}
+
+<h2 class="text-center">@ViewData["Title"]</h2>
+
+<hr />
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <div>
+            <label>Filtrar por proyecto</label>
+            <partial name="Parcial/_FiltroProyecto" model="@ViewBag.ProyectoSeleccionado" />
+        </div>
+        <a asp-action="Index" class="btn btn-dark">
+            <i class="fas fa-arrow-left me-2"></i> Regresar
+        </a>
+    </div>
+</div>
+
+
+<div class="row mt-4">
+
+    <!-- Pendiente -->
+    <div class="col-md-4">
+        <h4 class="text-center bg-warning text-white p-2 rounded">Pendiente</h4>
+        <div class="border p-2 rounded">
+            @foreach (var tarea in Model.Where(t => t.Estado == "Pendiente"))
+            {
+                var collapseId = "collapsePendiente" + tarea.TareaID;
+                <div class="card mb-2">
+                    <div class="card-header" data-bs-toggle="collapse" href="#@collapseId" role="button" style="cursor:pointer; background: #FFD699;">
+                        <h5 class="mb-0">@tarea.Titulo</h5>
+                    </div>
+                    <div id="@collapseId" class="collapse" style="background: #FFF3E0;">
+                        <div class="card-body">
+                            <p class="card-text">
+                                <strong>Proyecto:</strong> @tarea.Proyecto?.NombreProyecto <br />
+                                <strong>Usuario:</strong> @tarea.Usuario?.NombreUsuario <br />
+                                <strong>Fecha Límite:</strong> @tarea.FechaFin.ToShortDateString() <br />
+                                <strong>Prioridad:</strong> @tarea.Prioridad
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+
+    <!-- En Progreos -->
+    <div class="col-md-4">
+        <h4 class="text-center bg-info text-white p-2 rounded">En Progreso</h4>
+        <div class="border p-2 rounded">
+            @foreach (var tarea in Model.Where(t => t.Estado == "En Progreso"))
+            {
+                var collapseId = "collapseProgreso" + tarea.TareaID;
+                <div class="card mb-2">
+                    <div class="card-header" data-bs-toggle="collapse" href="#@collapseId" role="button" style="cursor:pointer; background: #6CA6CD;">
+                        <h5 class="mb-0">@tarea.Titulo</h5>
+                    </div>
+                    <div id="@collapseId" class="collapse" style="background: #E3F2FA;">
+                        <div class="card-body">
+                            <p class="card-text">
+                                <strong>Proyecto:</strong> @tarea.Proyecto?.NombreProyecto <br />
+                                <strong>Usuario:</strong> @tarea.Usuario?.NombreUsuario <br />
+                                <strong>Fecha Límite:</strong> @tarea.FechaFin.ToShortDateString() <br />
+                                <strong>Prioridad:</strong> @tarea.Prioridad
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+
+    <!-- Completada -->
+    <div class="col-md-4">
+        <h4 class="text-center bg-success text-white p-2 rounded">Finalizado</h4>
+        <div class="border p-2 rounded">
+            @foreach (var tarea in Model.Where(t => t.Estado == "Finalizado"))
+            {
+                var collapseId = "collapseCompletada" + tarea.TareaID;
+                <div class="card mb-2">
+                    <div class="card-header" data-bs-toggle="collapse" href="#@collapseId" role="button" style="cursor:pointer; background:  #81C784;">
+                        <h5 class="mb-0">@tarea.Titulo</h5>
+                    </div>
+                    <div id="@collapseId" class="collapse" style="background: #E8F5E9;">
+                        <div class="card-body">
+                            <p class="card-text">
+                                <strong>Proyecto:</strong> @tarea.Proyecto?.NombreProyecto <br />
+                                <strong>Usuario:</strong> @tarea.Usuario?.NombreUsuario <br />
+                                <strong>Fecha Límite:</strong> @tarea.FechaFin.ToShortDateString() <br />
+                                <strong>Prioridad:</strong> @tarea.Prioridad
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>

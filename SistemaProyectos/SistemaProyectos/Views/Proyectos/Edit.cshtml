@@ -1,0 +1,83 @@
+﻿@model SistemaProyectos.Models.Proyecto
+
+@{
+    ViewData["Title"] = "Editar un proyecto";
+}
+
+@section Styles {
+    <style>
+        body {
+            background-color: #E6E6FA;
+        }
+    </style>
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<hr />
+<div class="row" style="display:block; justify-self: center;">
+    <div class="col-12" style="width: 600px;">
+        <form asp-action="Edit" method="post">
+            <h4 class="text-center">Información del proyecto</h4>
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="ProyectoID" />
+            <br />
+            <div class="form-group">
+                <label asp-for="NombreProyecto" class="control-label"></label>
+                <input asp-for="NombreProyecto" class="form-control" />
+                <span asp-validation-for="NombreProyecto" class="text-danger"></span>
+            </div>
+            <br />
+            <div class="form-group">
+                <label asp-for="Descripcion" class="control-label"></label>
+                <textarea asp-for="Descripcion" class="form-control"></textarea>
+                <span asp-validation-for="Descripcion" class="text-danger"></span>
+            </div>
+            <br />
+            <div class="row">
+                <div class="form-group col-6">
+                    <label asp-for="FechaInicio" class="control-label"></label>
+                    <input asp-for="FechaInicio" class="form-control" type="date" />
+                    <span asp-validation-for="FechaInicio" class="text-danger"></span>
+                </div>
+                
+                <div class="form-group col-6">
+                    <label asp-for="FechaFin" class="control-label"></label>
+                    <input asp-for="FechaFin" class="form-control" type="date" />
+                    <span asp-validation-for="FechaFin" class="text-danger"></span>
+                </div>
+            </div>
+
+            <br />
+            <div class="form-group">
+                <label asp-for="Estado" hidden class="control-label"></label>
+                <input asp-for="Estado" hidden class="form-control" value="" />
+                <span asp-validation-for="Estado" hidden class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="EquipoID" class="control-label"></label>
+                <select asp-for="EquipoID" class="form-select" asp-items="ViewBag.EquipoID"></select>
+                <span asp-validation-for="EquipoID" class="text-danger"></span>
+            </div>
+            <hr />
+            <div class="form-group text-center">
+                <button type="submit" class="btn btn-primary">
+                    <i class="fa-solid fa-floppy-disk"></i>&nbsp; Guardar
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index" class="btn btn-dark">
+        <i class="fa-solid fa-backward"></i>&nbsp; Regresar
+    </a>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

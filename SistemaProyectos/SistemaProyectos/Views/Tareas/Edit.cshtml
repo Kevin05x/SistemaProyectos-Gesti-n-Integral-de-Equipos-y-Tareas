@@ -1,0 +1,115 @@
+﻿@model SistemaProyectos.Models.Tarea
+
+@{
+    ViewData["Title"] = "Editar una Tarea";
+}
+
+@section Styles {
+    <style>
+        body {
+            background-color: #E6E6FA;
+        }
+    </style>
+}
+
+<h1>@ViewData["Title"]</h1>
+<hr />
+
+<div class="row" style="display:block; justify-self:center;">
+    <div class="col-12" style="width: 600px;">
+        <form asp-action="Edit" method="post">
+            <h4 class="text-center">Información de la Tarea</h4>
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="TareaID" />
+            <br />
+
+            <div class="form-group">
+                <label asp-for="Titulo" class="control-label"></label>
+                <input asp-for="Titulo" class="form-control" />
+                <span asp-validation-for="Titulo" class="text-danger"></span>
+            </div>
+            <br />
+
+            <div class="form-group">
+                <label asp-for="Descripcion" class="control-label"></label>
+                <textarea asp-for="Descripcion" class="form-control" style="height: 100px;"></textarea>
+                <span asp-validation-for="Descripcion" class="text-danger"></span>
+            </div>
+            <br />
+
+            <div class="row">
+                <div class="form-group col-6">
+                    <label asp-for="FechaInicio" class="control-label"></label>
+                    <input asp-for="FechaInicio" type="date" class="form-control" />
+                    <span asp-validation-for="FechaInicio" class="text-danger"></span>
+                </div>
+                
+
+                <div class="form-group col-6">
+                    <label asp-for="FechaFin" class="control-label"></label>
+                    <input asp-for="FechaFin" type="date" class="form-control" />
+                    <span asp-validation-for="FechaFin" class="text-danger"></span>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label asp-for="Estado" hidden class="control-label"></label>
+                <input asp-for="Estado" hidden class="form-select" />
+                <span asp-validation-for="Estado" hidden class="text-danger"></span>
+            </div>
+
+            <br />
+
+            <div class="row">
+                <div class="form-group col-6">
+                    <label asp-for="ProyectoID" class="control-label">Proyecto</label>
+                    <select asp-for="ProyectoID" class="form-select" asp-items="ViewBag.Proyectos">
+                        <option value="">Seleccione un proyecto</option>
+                    </select>
+                    <span asp-validation-for="ProyectoID" class="text-danger"></span>
+                </div>
+                
+
+                <div class="form-group col-6">
+                    <label asp-for="UsuarioID" class="control-label">Usuario Encargado</label>
+                    <select asp-for="UsuarioID" class="form-select" asp-items="ViewBag.Usuarios">
+                        <option value="">Seleccione un usuario</option>
+                    </select>
+                    <span asp-validation-for="UsuarioID" class="text-danger"></span>
+                </div>
+            </div>
+            
+            <br />
+
+            <div class="form-group">
+                <label asp-for="Prioridad" class="control-label"></label>
+                <select asp-for="Prioridad" class="form-select">
+                    <option value="">Seleccione una prioridad</option>
+                    <option value="Alta">Alta</option>
+                    <option value="Media">Media</option>
+                    <option value="Baja">Baja</option>
+                </select>
+                <span asp-validation-for="Prioridad" class="text-danger"></span>
+            </div>
+            <hr />
+
+            <div class="form-group text-center">
+                <button type="submit" class="btn btn-warning">
+                    <i class="fa-solid fa-floppy-disk"></i>&nbsp; Guardar
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index" class="btn btn-dark">
+        <i class="fa-solid fa-backward"></i>&nbsp; Regresar
+    </a>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

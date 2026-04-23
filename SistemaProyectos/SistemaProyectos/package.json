@@ -1,0 +1,9 @@
+{
+  "dependencies": {
+    "bootstrap": "^5.3.7",
+    "sass": "^1.90.0"
+  },
+  "scripts": {
+    "build-css": "sass wwwroot/scss/custom.scss wwwroot/css/custom.css --no-source-map"
+  }
+}

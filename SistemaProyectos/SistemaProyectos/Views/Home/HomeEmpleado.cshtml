@@ -1,0 +1,111 @@
+﻿@model SistemaProyectos.ViewModels.HomeUserIndex
+
+@{
+    ViewData["Title"] = "Panel de Empleado";
+}
+
+<div class="container mt-4">
+
+    <!-- Mensaje de bienvenida -->
+    <div class="alert alert-primary shadow-sm text-center">
+        <h4>
+            <i class="fas fa-handshake"></i>
+            ¡Bienvenido, @Model.NombreCompleto!
+        </h4>
+        <p class="mb-0">Este es tu panel personal, aquí verás tu información, equipos y tareas asignadas.</p>
+    </div>
+
+    <div class="row">
+        <!-- Columna izquierda: Datos del empleado -->
+        <div class="col-md-4">
+            <div class="card shadow-lg p-3 mb-4 bg-white rounded">
+                <div class="text-center">
+                    <!-- Foto -->
+                    <img src="~/Resources/empleado.jpg"
+                         class="img-fluid rounded-circle mb-3 border border-3 border-primary"
+                         alt="Empleado" width="120" height="120" />
+                    <h5 class="fw-bold text-primary">
+                        <i class="fas fa-user"></i> Empleado
+                    </h5>
+                </div>
+
+                <div class="card-body">
+                    <p class="mb-2">
+                        <i class="fas fa-id-badge text-secondary"></i>
+                        <strong>Nombre:</strong> @Model.NombreCompleto
+                    </p>
+                    <p class="mb-2">
+                        <i class="fas fa-envelope text-secondary"></i>
+                        <strong>Correo:</strong> @Model.Correo
+                    </p>
+                    <p class="mb-4">
+                        <i class="fas fa-calendar-alt text-secondary"></i>
+                        <strong>Fecha de Registro:</strong> @Model.FechaRegistro.ToShortDateString()
+                    </p>
+
+                    <!-- Lista de equipos -->
+                    <div class="card">
+                        <div class="card-header bg-primary text-white">
+                            <i class="fas fa-users"></i> Equipos
+                        </div>
+                        <ul class="list-group list-group-flush">
+                            @if (Model.Equipos.Any())
+                            {
+                                @foreach (var equipo in Model.Equipos)
+                                {
+                                    <li class="list-group-item bg-light">
+                                        <i class="fas fa-user-friends text-primary"></i>
+                                        @equipo.NombreEquipo
+                                    </li>
+                                }
+                            }
+                            else
+                            {
+                                <li class="list-group-item text-muted">
+                                    <i class="fas fa-exclamation-circle"></i> No pertenece a ningún equipo.
+                                </li>
+                            }
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Columna derecha: Tareas -->
+        <div class="col-md-8">
+            <div class="card shadow-lg p-3 mb-4 bg-white rounded">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0">
+                        <i class="fas fa-tasks"></i> Tareas Asignadas
+                    </h5>
+                </div>
+                <div class="card-body">
+                    @if (Model.Tareas != null && Model.Tareas.Any())
+                    {
+                        <ul class="list-group">
+                            @foreach (var tarea in Model.Tareas)
+                            {
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <i class="fas fa-clipboard-list text-secondary"></i>
+                                        <strong>@tarea.Titulo</strong>
+                                    </div>
+                                    <span class="badge bg-secondary">@tarea.Estado</span>
+                                </li>
+                            }
+                        </ul>
+                    }
+                    else
+                    {
+                        <p class="text-muted">
+                            <i class="fas fa-check-circle"></i> No tienes tareas pendientes.
+                        </p>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- FontAwesome -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />

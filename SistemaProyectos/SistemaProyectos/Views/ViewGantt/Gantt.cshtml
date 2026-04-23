@@ -1,0 +1,176 @@
+﻿@{
+    var defaultView = ViewBag.DefaultView ?? "Day";
+    var tareasJson = ViewBag.TareasJson ?? "[]";
+    var proyectoSeleccionado = ViewBag.ProyectoSeleccionado;
+}
+
+<link rel="stylesheet" href="https://unpkg.com/frappe-gantt@0.6.1/dist/frappe-gantt.css">
+<script src="https://unpkg.com/frappe-gantt@0.6.1/dist/frappe-gantt.min.js"></script>
+
+@section Styles {
+    <style>
+        body {
+            background-color: #E6E6FA;
+        }
+    </style>
+}
+
+<div class="container mt-4">
+    <div class="card shadow mb-4 " style="background: #E6E6FA">
+        <div class="card-header py-3" style="background: #9370DB">
+            <h4 class="m-0 font-weight-bold text-white text-center w-100">Vista Gantt</h4>
+        </div>
+        <div class="card-body">
+            <form method="get" action="@Url.Action("Gantt")" class="mb-4">
+                <div class="row form-row align-items-center">
+                    <div class="col-6">
+                        <label for="proyectoId" class="form-label"><strong>Seleccionar Proyecto:</strong></label>
+                        @Html.DropDownList("proyectoId", ViewBag.Proyectos as SelectList, "Seleccione un proyecto",
+                        new { @class = "form-control form-control-lg fs-6", @onchange = "this.form.submit()" })
+                    </div>
+                    <div class="col-6 d-flex justify-content-end">
+                        <a asp-controller="Tareas" asp-action="Index" class="btn btn-dark">
+                            <i class="fas fa-arrow-left me-2"></i> Regresar
+                        </a>
+                    </div>
+                    @if (proyectoSeleccionado != null)
+                    {
+                        <div class="col-md-4 mb-3">
+                            <label for="vista" class="form-label"><strong>Vista:</strong></label>
+                            <select id="vista" name="vista" class="form-control form-control-lg fs-6" onchange="this.form.submit()">
+                                <option value="Day">Por Días</option>
+                                <option value="Week">Por Semanas</option>
+                                <option value="Month">Por Meses</option>
+                            </select>
+                            <script>
+                                document.addEventListener("DOMContentLoaded", function() {
+                                    document.getElementById("vista").value = "@defaultView";
+                                });
+                            </script>
+                        </div>
+                    }
+                </div>
+            </form>
+
+            @if (proyectoSeleccionado != null)
+            {
+                @if (!string.IsNullOrEmpty(ViewBag.NombreProyecto))
+                {
+                    <div class="alert alert-info mb-4">
+                        <h5 class="alert-heading">@ViewBag.NombreProyecto</h5>
+                        <p class="mb-0">Visualizando tareas del proyecto seleccionado.</p>
+                    </div>
+                }
+
+                <div id="gantt-container" style="height:600px; overflow-x:auto; border:1px solid #ddd; border-radius:5px;">
+                    <svg id="gantt-chart"></svg>
+                </div>
+
+                <div class="mt-4">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <span class="badge badge-warning mr-2">Pendiente</span>
+                            <span class="badge badge-info mr-2">En Progreso</span>
+                            <span class="badge badge-success">Completada</span>
+                        </div>
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div class="alert alert-warning">
+                    <i class="fas fa-info-circle mr-2"></i>Por favor seleccione un proyecto para visualizar el diagrama de Gantt.
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@if (proyectoSeleccionado != null)
+{
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const tasks = @Html.Raw(tareasJson);
+            const defaultView = "@defaultView";
+
+            function getColorByEstado(estado) {
+                if (!estado) return "#4e73df";
+
+                estado = estado.toLowerCase();
+                switch(estado) {
+                    case "pendiente": return "#FFA500";
+                    case "en progreso":
+                    case "progreso": return "#00BFFF";
+                    case "completada":
+                    case "terminada": return "#32CD32";
+                    default: return "#4e73df";
+                }
+            }
+
+            const gantt = new Gantt("#gantt-chart", tasks, {
+                view_mode: defaultView,
+                date_format: 'YYYY-MM-DD',
+                custom_popup_html: function(task) {
+                    return `
+                        <div class="gantt-popup">
+                            <h5>${task.name}</h5>
+                            <p><strong>Estado:</strong> ${task.estado || 'No especificado'}</p>
+                            <p><strong>Inicio:</strong> ${task.start}</p>
+                            <p><strong>Fin:</strong> ${task.end}</p>
+                        </div>
+                    `;
+                },
+                bar_color: function(task) {
+                    return getColorByEstado(task.estado);
+                },
+                on_click: function(task) {
+                    console.log("Tarea clickeada:", task);
+                }
+            });
+
+            document.querySelectorAll('.bar-wrapper').forEach(bar => {
+                const taskId = bar.getAttribute('data-id');
+                const task = tasks.find(t => t.id == taskId);
+                if (task && task.estado) {
+                    bar.setAttribute('data-estado', task.estado.toLowerCase());
+                }
+            });
+        });
+    </script>
+
+    <style>
+        .gantt-container {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .gantt .bar-wrapper[data-estado="pendiente"] .bar,
+        .gantt .bar-wrapper[data-estado="pendiente"] .bar-progress {
+            fill: #FFA500;
+        }
+
+        .gantt .bar-wrapper[data-estado="en progreso"] .bar,
+        .gantt .bar-wrapper[data-estado="progreso"] .bar,
+        .gantt .bar-wrapper[data-estado="en progreso"] .bar-progress,
+        .gantt .bar-wrapper[data-estado="progreso"] .bar-progress {
+            fill: #00BFFF;
+        }
+
+        .gantt .bar-wrapper[data-estado="completada"] .bar,
+        .gantt .bar-wrapper[data-estado="terminada"] .bar,
+        .gantt .bar-wrapper[data-estado="completada"] .bar-progress,
+        .gantt .bar-wrapper[data-estado="terminada"] .bar-progress {
+            fill: #32CD32;
+        }
+
+        .gantt .bar-wrapper:hover .bar {
+            opacity: 0.8;
+        }
+
+        .gantt-popup {
+            background: white;
+            padding: 10px;
+            border-radius: 4px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+        }
+    </style>
+}

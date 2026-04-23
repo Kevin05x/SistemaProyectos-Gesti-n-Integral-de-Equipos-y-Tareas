@@ -1,0 +1,202 @@
+﻿@model SistemaProyectos.ViewModels.ProyectoCreateViewModel
+
+@{
+    ViewData["Title"] = "Crear un proyecto";
+}
+
+@section Styles {
+    <style>
+        body {
+            background-color: #E6E6FA;
+        }
+    </style>
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<hr />
+
+<form asp-action="Create" method="post">
+    <div class="row">
+        <!-- ================== FORMULARIO PROYECTO ================== -->
+        <div class="col-5 border-end border-black">
+            <h4 class="text-center">Información del proyecto</h4>
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div class="form-group">
+                <label asp-for="Proyecto.NombreProyecto"></label>
+                <input asp-for="Proyecto.NombreProyecto" class="form-control" />
+                <span asp-validation-for="Proyecto.NombreProyecto" class="text-danger"></span>
+            </div>
+            <br />
+
+            <div class="form-group">
+                <label asp-for="Proyecto.Descripcion"></label>
+                <textarea asp-for="Proyecto.Descripcion" class="form-control" style="height:100px;"></textarea>
+                <span asp-validation-for="Proyecto.Descripcion" class="text-danger"></span>
+            </div>
+            <br />
+
+            <div class="row">
+                <div class="form-group col-6">
+                    <label asp-for="ProyectoFechaInicio"></label>
+                    <input asp-for="ProyectoFechaInicio" class="form-control" type="date" />
+                    <span asp-validation-for="ProyectoFechaInicio" class="text-danger"></span>
+                </div>
+                <div class="form-group col-6">
+                    <label asp-for="ProyectoFechaFin"></label>
+                    <input asp-for="ProyectoFechaFin" class="form-control" type="date" />
+                    <span asp-validation-for="ProyectoFechaFin" class="text-danger"></span>
+                </div>
+            </div>
+
+            <br />
+
+            <div class="form-group col-6">
+                <label asp-for="Proyecto.FechaRegistro" hidden></label>
+                <input asp-for="Proyecto.FechaRegistro" hidden class="form-control" type="date" />
+                <span asp-validation-for="Proyecto.FechaRegistro" hidden class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label>Asignar equipo:</label>
+                <select asp-for="Proyecto.EquipoID" class="form-select" asp-items="Model.EquiposDisponibles">
+                    <option value="">Selecciona un equipo</option>
+                </select>
+                <span asp-validation-for="Proyecto.EquipoID" class="text-danger"></span>
+            </div>
+            <br />
+        </div>
+
+        <!-- ================== FORMULARIO TAREAS ================== -->
+        <div class="col-7 ps-4">
+            <h4 class="text-center">Tareas del proyecto</h4>
+
+            @* Mostrar mensaje de error de tarea incompleta *@
+            @if (TempData["ErrorTarea"] != null)
+            {
+                <div class="alert alert-warning">
+                    @TempData["ErrorTarea"]
+                </div>
+            }
+
+            <div class="form-group">
+                <label asp-for="Tarea.Titulo"></label>
+                <input asp-for="Tarea.Titulo" class="form-control" />
+                <span asp-validation-for="Tarea.Titulo" class="text-danger"></span>
+            </div>
+            <br />
+
+            <div class="form-group">
+                <label asp-for="Tarea.Descripcion"></label>
+                <textarea asp-for="Tarea.Descripcion" class="form-control" style="height:80px;"></textarea>
+                <span asp-validation-for="Tarea.Descripcion" class="text-danger"></span>
+            </div>
+            <br />
+
+            <div class="row">
+                <div class="form-group col-6">
+                    <label asp-for="Tarea.FechaInicio"></label>
+                    <input asp-for="Tarea.FechaInicio" class="form-control" type="date" />
+                    <span asp-validation-for="Tarea.FechaInicio" class="text-danger"></span>
+                </div>
+                <div class="form-group col-6">
+                    <label asp-for="Tarea.FechaFin"></label>
+                    <input asp-for="Tarea.FechaFin" class="form-control" type="date" />
+                    <span asp-validation-for="Tarea.FechaFin" class="text-danger"></span>
+                </div>
+            </div>
+            <br />
+
+            <div class="row">
+                <div class="form-group col-6">
+                    <label asp-for="Tarea.UsuarioID"></label>
+                    <select asp-for="Tarea.UsuarioID" class="form-select" asp-items="Model.UsuariosDisponibles">
+                        <option value="">Seleccione usuario</option>
+                    </select>
+                    <span asp-validation-for="Tarea.UsuarioID" class="text-danger"></span>
+                </div>
+                <div class="form-group col-6">
+                    <label asp-for="Tarea.Prioridad"></label>
+                    <select asp-for="Tarea.Prioridad" class="form-select" asp-items="Model.PrioridadesDisponibles">
+                        <option value="">Seleccione prioridad</option>
+                    </select>
+                    <span asp-validation-for="Tarea.Prioridad" class="text-danger"></span>
+                </div>
+            </div>
+            <br />
+            <div class="text-center">
+                <button type="submit" name="action" value="AgregarTarea" class="btn btn-success">
+                    <i class="fa-solid fa-plus"></i>&nbsp; Añadir tarea
+                </button>
+            </div>
+            
+
+            <hr />
+
+            <!-- ================== TABLA DE TAREAS ACUMULADAS ================== -->
+            <h5 class="text-center">Tareas asignadas</h5>
+            @if (Model.TareasAcumuladas != null && Model.TareasAcumuladas.Any())
+            {
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th class="bg-info">Título</th>
+                            <th class="bg-info">Descripción</th>
+                            <th class="bg-info">Usuario</th>
+                            <th class="bg-info">Prioridad</th>
+                            <th class="bg-info">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @for (int i = 0; i < Model.TareasAcumuladas.Count; i++)
+                        {
+                            <tr>
+                                <td>@Model.TareasAcumuladas[i].Titulo</td>
+                                <td>@Model.TareasAcumuladas[i].Descripcion</td>
+                                <td>@Model.TareasAcumuladas[i].UsuarioID</td>
+                                <td>@Model.TareasAcumuladas[i].Prioridad</td>
+                                <td>
+                                    <button type="submit" name="action" value="eliminar-@i" class="btn btn-danger btn-sm">
+                                        <i class="fa-solid fa-minus"></i>&nbsp; Eliminar
+                                    </button>
+                                </td>
+                            </tr>
+
+                            <!-- Campos ocultos para persistir datos -->
+                            <input type="hidden" name="TareasAcumuladas[@i].Titulo" value="@Model.TareasAcumuladas[i].Titulo" />
+                            <input type="hidden" name="TareasAcumuladas[@i].Descripcion" value="@Model.TareasAcumuladas[i].Descripcion" />
+                            <input type="hidden" name="TareasAcumuladas[@i].UsuarioID" value="@Model.TareasAcumuladas[i].UsuarioID" />
+                            <input type="hidden" name="TareasAcumuladas[@i].Prioridad" value="@Model.TareasAcumuladas[i].Prioridad" />
+                        }
+                    </tbody>
+                </table>
+            }
+            else
+            {
+                <div class="text-center">
+                    <label>No hay tareas acumuladas</label>
+                </div>
+                
+            }
+        </div>
+    </div>
+
+    <hr />
+    <div class="row col-5">
+        <div class="col-3">
+            <a asp-action="Index" class="btn btn-dark">
+                <i class="fa-solid fa-backward"></i> Regresar
+            </a>
+        </div>
+        <div class="col-3 form-group text-center">
+            <button type="submit" name="action" value="CrearProyecto" class="btn btn-primary">
+                Crear <i class="fa-solid fa-floppy-disk"></i>
+            </button>
+        </div>
+    </div>
+</form>
+
+@section Scripts {
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+}

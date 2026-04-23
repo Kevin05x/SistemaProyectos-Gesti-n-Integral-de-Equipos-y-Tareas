@@ -1,0 +1,26 @@
+﻿<br />
+@if (User.IsInRole("Administrador"))
+{
+    <div class="text-center">
+        <a id="btnEditar" class="btn btn-warning disabled" style="width: 120px; height: 40px;" href="#">
+            <i class="fa-solid fa-file-pen"></i>&nbsp;Editar
+        </a>
+    </div>
+    <br />
+}
+
+<div class="text-center">
+    <a id="btnDetalles" class="btn btn-info disabled" style="width: 120px; height: 40px;" href="#">
+        <i class="fa-solid fa-info"></i>&nbsp;Detalles
+    </a>
+</div>
+
+@if (User.IsInRole("Administrador"))
+{
+    <br />
+    <div class="text-center">
+        <a id="btnEliminar" class="btn btn-dark text-white disabled" style="width: 120px; height: 40px;" href="#">
+            <i class="fa-solid fa-circle-minus"></i>&nbsp;Eliminar
+        </a>
+    </div>
+}

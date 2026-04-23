@@ -1,0 +1,117 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - SistemaProyectos</title>
+    <link rel="stylesheet" href="~/css/custom.css" />
+    <link rel="stylesheet" href="~/lib/fortawesome/fontawesome-free/css/all.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/SistemaProyectos.styles.css" asp-append-version="true" />
+    @await RenderSectionAsync("Styles", required: false)
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-primary border-bottom box-shadow mb-3">
+            <div class="container-fluid">
+                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="@(User.IsInRole("Administrador")? "Index" : "HomeEmpleado")">
+                    <img src="/Resources/logo_layout.png" alt="Sistema De Gestión de Proyectos" style="width: 150px; height: 60px; object-fit: cover;" class="d-inline-block align-text-top" />
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                        aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                    <ul class="navbar-nav flex-grow-1">
+                        @{
+                            string rol = User.IsInRole("Administrador") ? "Administrador" :
+                            User.IsInRole("Empleado") ? "Empleado" : "Otro";
+                            switch (rol)
+                            {
+                                case "Administrador":
+                                    <li class="nav-item">
+                                        <a class="nav-link text-white fw-medium" asp-controller="Proyectos" asp-action="Index">
+                                            <i class="fa-solid fa-bars-progress"></i>&nbsp; Administrar Proyectos
+                                        </a>
+                                    </li>
+                                    <li class="nav-item border-start px-2">
+                                        <a class="nav-link text-white fw-medium" asp-controller="Tareas" asp-action="Index">
+                                            <i class="fa-solid fa-thumbtack"></i>&nbsp; Administrar Tareas
+                                        </a>
+                                    </li>
+                                    <li class="nav-item border-start px-2">
+                                        <a class="nav-link text-white fw-medium" asp-controller="Usuarios" asp-action="Index">
+                                            <i class="fa-solid fa-users"></i>&nbsp; Administrar Usuarios
+                                        </a>
+                                    </li>
+                                    <li class="nav-item border-start px-2">
+                                        <a class="nav-link text-white fw-medium" asp-controller="Equipos" asp-action="Index">
+                                            <i class="fa-solid fa-people-group"></i>&nbsp; Administrar Equipos
+                                        </a>
+                                    </li>
+                                    <li class="nav-item border-start px-2">
+                                        <a class="nav-link text-white fw-medium" asp-controller="Comentarios" asp-action="Index">
+                                            <i class="fa-solid fa-comments"></i>&nbsp; Administrar Comentarios
+                                        </a>
+                                    </li>
+                                    break;
+
+                                    case "Empleado":
+                                    <li class="nav-item border-start px-2">
+                                        <a class="nav-link text-white fw-medium" asp-controller="Tareas" asp-action="Index">
+                                            <i class="fa-solid fa-thumbtack"></i>&nbsp; Tareas
+                                        </a>
+                                    </li>
+                                    break;
+
+                                    case "Otro":
+
+                                    break;
+
+                            }
+
+                        }
+                    </ul>
+
+                    <div class="d-flex align-items-center">
+                        <div class="dropdown">
+                            <a class="nav-link dropdown-toggle text-white fw-medium" href="#" role="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fa-solid fa-circle-user border-start px-2"></i> @User.Identity.Name
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                                <li>
+                                    <form asp-controller="Cuenta" asp-action="Logout" method="post" style="display:inline;">
+                                        <button type="submit" class="dropdown-item">
+                                            <i class="fa-solid fa-right-to-bracket"></i>&nbsp; Cerrar sesión
+                                        </button>
+                                    </form>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <div class="container">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+
+    @if (ViewBag.OcultarFooter == null || ViewBag.OcultarFooter == false)
+    {
+        <footer class="border-top footer text-muted">
+            <div class="container">
+                &copy; 2025 - SistemaProyectos - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            </div>
+        </footer>
+    }
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

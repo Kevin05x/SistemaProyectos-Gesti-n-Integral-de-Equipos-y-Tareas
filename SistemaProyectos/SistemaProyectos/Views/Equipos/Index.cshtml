@@ -1,0 +1,119 @@
+﻿@model IEnumerable<SistemaProyectos.Models.Equipo>
+
+@{
+    ViewData["Title"] = "Equipos";
+}
+
+@section Styles {
+    <style>
+        body {
+            background-color: #E6E6FA;
+        }
+    </style>
+}
+
+<h1>@ViewData["Title"]</h1>
+<hr />
+
+<div class="row">
+    <div class="col-3">
+        <label class="text-start d-block">Búsqueda por nombre de equipo</label>
+        <partial name="Parcial/_Busqueda" model="ViewBag.Busqueda" />
+    </div>
+    <div class="col-3 d-flex justify-content-center align-items-center">
+        <a asp-controller="Equipos" asp-action="Index" class="btn btn-secondary">
+            Limpiar filtros
+        </a>
+    </div>
+</div>
+<hr />
+<div class="row mb-3">
+    <p>Total de Equipos: <strong>@ViewBag.TotalRegistros</strong></p>
+</div>
+
+<div class="row">
+    <div class="col-10">
+        <table id="tablaEquipos" class="table table-bordered table-hover">
+            <thead class="table-primary text-center">
+                <tr class="align-middle">
+                    <th>Nombre del Equipo</th>
+                    <th>Descripción</th>
+                    <th>Fecha de Registro</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr onclick="seleccionarEquipo(@item.EquipoID, this)" class="align-middle">
+                        <td style="background-color: lightgrey">
+                            @Html.DisplayFor(modelItem => item.NombreEquipo)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Descripcion)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.FechaRegistro)
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <div class="col-2 text-center">
+        <div class="mb-2">
+            <a asp-action="Create" class="btn btn-success" style="width: 120px; height: 40px;">
+                <i class="fa-solid fa-circle-plus"></i> Crear
+            </a>
+        </div>
+        <div>
+            <partial name="Parcial/_Crud" />
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <nav aria-label="Paginación de equipos">
+        <ul class="pagination justify-content-center">
+
+
+            <li class="page-item @(ViewBag.PaginaActual == 1 ? "disabled" : "")">
+                <a class="page-link" asp-action="Index" asp-route-page="@(ViewBag.PaginaActual - 1)" asp-route-estado="@ViewBag.EstadoSeleccionado">&laquo;</a>
+            </li>
+
+            @for (int i = ViewBag.PaginaInicio; i <= ViewBag.PaginaFin; i++)
+            {
+                <li class="page-item @(i == ViewBag.PaginaActual ? "active" : "")">
+                    <a class="page-link" asp-action="Index" asp-route-page="@i" asp-route-estado="@ViewBag.EstadoSeleccionado">@i</a>
+                </li>
+            }
+
+            <li class="page-item @(ViewBag.PaginaActual == ViewBag.TotalPaginas ? "disabled" : "")">
+                <a class="page-link" asp-action="Index" asp-route-page="@(ViewBag.PaginaActual + 1)" asp-route-estado="@ViewBag.EstadoSeleccionado">&raquo;</a>
+            </li>
+
+        </ul>
+    </nav>
+</div>
+
+<script>
+    function seleccionarEquipo(idSeleccionado, fila) {
+        const filas = document
+            .getElementById("tablaEquipos")
+            .getElementsByTagName("tbody")[0]
+            .getElementsByTagName("tr");
+
+        // Quitar selección previa
+        for (let i = 0; i < filas.length; i++) {
+            filas[i].classList.remove("table-active");
+        }
+
+        // Resaltar fila seleccionada
+        fila.classList.add("table-active");
+
+        // Actualizar enlaces de CRUD
+        document.getElementById("btnEditar").href = `/Equipos/Edit/${idSeleccionado}`;
+        document.getElementById("btnDetalles").href = `/Equipos/Details/${idSeleccionado}`;
+        document.getElementById("btnEliminar").href = `/Equipos/Delete/${idSeleccionado}`;
+    }
+</script>

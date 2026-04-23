@@ -1,0 +1,299 @@
+﻿@model IEnumerable<SistemaProyectos.Models.Proyecto>
+
+@{
+    ViewData["Title"] = "Proyectos";
+    var listaProyectos = ViewData["ProyectosLista"] as List<SistemaProyectos.Models.Proyecto>;
+}
+
+@section Styles {
+    <style>
+        body {
+            background-color: #E6E6FA;
+        }
+    </style>
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<hr />
+
+<div class="row">
+    <div class="col-3">
+        <label class="text-start d-block">Filtrar por equipo</label>
+        <partial name="Parcial/_FiltroEquipo" model="ViewBag.EstadoSeleccionado" />
+    </div>
+
+    <div class="col-2 text-center">
+        <label class="text-start d-block">Filtrar por estado</label>
+        <partial name="Parcial/_FiltroEstado" model="ViewBag.EstadoSeleccionado" />
+    </div>
+
+    <div class="col-3 text-center">
+        <label class="text-start d-block">Búsqueda por nombre de proyecto</label>
+        <partial name="Parcial/_Busqueda" model="ViewBag.Busqueda" />
+    </div>
+    <div class="col-2 d-flex justify-content-center align-items-center">
+        <a asp-controller="Proyectos" asp-action="Index" class="btn btn-secondary">
+            Limpiar filtros
+        </a>
+    </div>
+
+    <div class="d-flex align-items-center col-2">
+        <div class="dropdown btn btn-outline-primary">
+            <a class="nav-link dropdown-toggle" href="#" id="GenerarReporteDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                📑 Generar Reporte
+            </a>
+            <div class="dropdown-menu dropdown-menu-start" aria-labelledby="GenerarReporteDropdown">
+
+                <div class="card-body p-2">
+                    <form id="formReporte" method="get">
+                        <div class="mb-3">
+                            <label for="tipoReporte" class="form-label">Formato</label>
+                            <select id="tipoReporte" name="tipoReporte" class="form-select">
+                                <option value="PDF">📕 PDF</option>
+                                <option value="Excel">📗 Excel</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="accion" class="form-label">Exportar</label>
+                            <select id="accion" name="accion" class="form-select" onchange="mostrarCampos()">
+                                <option value="Todos">Todo</option>
+                                <option value="Estado">Por Estado</option>
+                                <option value="ProyectoNombre">Por Proyecto</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3" id="campoEstado" style="display:none;">
+                            <label for="estado" class="form-label">Estado</label>
+                            <select id="estado" name="estado" class="form-select">
+                                <option value="Pendiente">Pendiente</option>
+                                <option value="Completado">Completado</option>
+                                <option value="En Progreso">En Progreso</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3" id="campoProyecto" style="display:none;">
+                            <label for="proyectoNombre" class="form-label">Seleccionar Proyecto</label>
+                            <select id="proyectoNombre" name="proyectoNombre" class="form-select">
+                                <option value="">--</option>
+                                @foreach (var proyecto in (IEnumerable<SistemaProyectos.Models.Proyecto>)ViewData["ProyectosLista"])
+                                {
+                                    <option value="@proyecto.NombreProyecto">@proyecto.NombreProyecto</option>
+                                }
+                            </select>
+                        </div>
+
+                        <button type="button" onclick="generarReporte()" class="btn btn-primary w-100">
+                            <i class="fa-solid fa-file-export"></i> Generar
+                        </button>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<hr />
+<div class="row">
+    <p>Total de proyectos: <strong>@ViewBag.TotalRegistros</strong> </p>
+</div>
+<div class="row">
+    <div class="col-10">
+        <table id="tabla" class="table table-bordered table-hover" border="1">
+            <thead class="table-primary text-white">
+                <tr class="align-middle">
+                    <th>
+                        <label>Nombre del proyecto</label>
+                    </th>
+                    <th>
+                        <label>Descripcion</label>
+                    </th>
+                    <th>
+                        <label>Fecha de inicio</label>
+                    </th>
+                    <th>
+                        <label>Fecha de fin</label>
+                    </th>
+                    <th>
+                        <label>Estado</label>
+                    </th>
+                    <th>
+                        <label>Equipo responsable</label>
+                    </th>
+                    <th>
+                        <label>Fecha de registro</label>
+                    </th>
+
+                </tr>
+            </thead>
+            <tbody class="">
+                @foreach (var item in Model)
+                {
+                    <tr onclick="obtenerIDCambiarColor(@item.ProyectoID, this)" class="align-middle">
+                        <td style="background-color: lightgrey">
+                            @Html.DisplayFor(modelItem => item.NombreProyecto)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Descripcion)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.FechaInicio)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.FechaFin)
+                        </td>
+                        <td>
+                            @{
+                                string color;
+                                switch (item.Estado)
+                                {
+                                    case "Pendiente":
+                                        color = "secondary";
+                                        break;
+
+                                    case "En Progreso":
+                                        color = "warning";
+                                        break;
+                                    case "Finalizado":
+                                        color = "success";
+                                        break;
+                                    case "Completado":
+                                        color = "success";
+                                        break;
+                                    default:
+                                        color = "light";
+                                        break;
+                                }
+
+                            }
+                            <div class="col-12 d-flex justify-content-center align-items-center">
+                                <span class="rounded-pill p-2 bg-@(color) col-12 text-center">@Html.DisplayFor(modelItem => item.Estado)</span>
+                            </div>
+
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Equipo.NombreEquipo)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.FechaRegistro)
+                        </td>
+
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <div class="col-2 text-center">
+        <div>
+            <a asp-action="Create" class="btn btn-success" style="width: 120px; height: 40px;">
+                <i class="fa-solid fa-circle-plus"></i>&nbsp;Crear
+            </a>
+        </div>
+        <div>
+            <partial name="Parcial/_Crud" />
+        </div>
+
+    </div>
+</div>
+
+<div class="row">
+    <nav aria-label="Paginación de proyectos">
+        <ul class="pagination justify-content-center">
+
+
+            <li class="page-item @(ViewBag.PaginaActual == 1 ? "disabled" : "")">
+                <a class="page-link" asp-action="Index" asp-route-page="@(ViewBag.PaginaActual - 1)" asp-route-proyectoID="@ViewBag.ProyectoId" asp-route-busqueda="@ViewBag.Busqueda">&laquo;</a>
+            </li>
+
+            @for (int i = ViewBag.PaginaInicio; i <= ViewBag.PaginaFin; i++)
+            {
+                <li class="page-item @(i == ViewBag.PaginaActual ? "active" : "")">
+                    <a class="page-link" asp-action="Index" asp-route-page="@i" asp-route-proyectoID="@ViewBag.ProyectoId" asp-route-busqueda="@ViewBag.Busqueda">@i</a>
+                </li>
+            }
+
+            <li class="page-item @(ViewBag.PaginaActual == ViewBag.TotalPaginas ? "disabled" : "")">
+                <a class="page-link" asp-action="Index" asp-route-page="@(ViewBag.PaginaActual + 1)" asp-route-proyectoID="@ViewBag.ProyectoId" asp-route-busqueda="@ViewBag.Busqueda">&raquo;</a>
+            </li>
+
+        </ul>
+    </nav>
+</div>
+@section Scripts {
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            mostrarCampos();
+        });
+
+        function mostrarCampos() {
+            const accion = document.getElementById("accion").value;
+
+            const grupoEstado = document.getElementById("campoEstado");
+            const grupoProyecto = document.getElementById("campoProyecto");
+
+            const selEstado = document.getElementById("estado");
+            const inputProyecto = document.getElementById("proyectoNombre");
+
+            const verEstado = (accion === "Estado");
+            const verProyecto = (accion === "ProyectoNombre");
+
+            grupoEstado.style.display = verEstado ? "block" : "none";
+            grupoProyecto.style.display = verProyecto ? "block" : "none";
+
+            selEstado.disabled = !verEstado;
+            inputProyecto.disabled = !verProyecto;
+
+            inputProyecto.required = verProyecto;
+
+            if (!verProyecto) inputProyecto.classList.remove("is-invalid");
+        }
+
+        function generarReporte() {
+            const tipoReporte = document.getElementById("tipoReporte").value;
+            const accion = document.getElementById("accion").value;
+            const inputProyecto = document.getElementById("proyectoNombre");
+            const proyectoNombre = (inputProyecto.value || "").trim();
+            const form = document.getElementById("formReporte");
+
+            if (accion === "ProyectoNombre") {
+                if (proyectoNombre === "") {
+                    inputProyecto.classList.add("is-invalid");
+                    inputProyecto.focus();
+                    alert("Selecciona un proyecto válido.");
+                    return;
+                } else {
+                    inputProyecto.classList.remove("is-invalid");
+                }
+            }
+
+            form.action = (tipoReporte === "PDF")
+                ? "/ReportesPDF/ProyectosPDF"
+                : "/ReportesExcel/ProyectosExcel";
+
+            form.submit();
+        }
+
+        function obtenerIDCambiarColor(idSeleccionado, fila) {
+            const filas = document
+                .getElementById("tabla")
+                .getElementsByTagName("tbody")[0]
+                .getElementsByTagName("tr");
+
+            for (let i = 0; i < filas.length; i++) {
+                filas[i].classList.remove("table-active");
+            }
+
+            fila.classList.add("table-active");
+
+            document.getElementById("btnEditar").href = `/Proyectos/Edit/${idSeleccionado}`;
+            document.getElementById("btnDetalles").href = `/Proyectos/Details/${idSeleccionado}`;
+            document.getElementById("btnEliminar").href = `/Proyectos/Delete/${idSeleccionado}`;
+        }
+    </script>
+
+}

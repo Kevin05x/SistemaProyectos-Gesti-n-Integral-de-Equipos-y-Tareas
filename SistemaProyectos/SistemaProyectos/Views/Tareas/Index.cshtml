@@ -1,0 +1,291 @@
+﻿@model IEnumerable<SistemaProyectos.Models.Tarea>
+@{
+    ViewData["Title"] = "Tareas";
+}
+
+<h1>Tareas</h1>
+<hr />
+
+@section Styles {
+    <style>
+        body {
+            background-color: #E6E6FA;
+        }
+    </style>
+}
+
+<div class="row">
+    <div class="col-3">
+        <label>Filtrar por proyecto</label>
+        <partial name="Parcial/_FiltroProyecto" model="ViewBag.ProyectoSeleccionado" />
+    </div>
+
+    <div class="col-3">
+        <label>Filtrar por estado</label>
+        <partial name="Parcial/_FiltroEstado" model="ViewBag.EstadoSeleccionado" />
+    </div>
+
+    <div class="row col-3">
+        <label>Búsqueda por título de la tarea</label>
+        <partial name="Parcial/_Busqueda" model="ViewBag.Busqueda" />
+
+    </div>
+    <div class="col-3 d-flex justify-content-center align-items-center">
+        <a asp-controller="Tareas" asp-action="Index" class="btn btn-secondary">
+            Limpiar filtros
+        </a>
+    </div>
+
+</div>
+<hr />
+
+@if (User.IsInRole("Administrador"))
+{
+    <div class="row align-content-between">
+        <div class="col-4 ">
+            <a asp-action="KanBan" class="btn btn-primary">
+                <i class="fa-solid fa-columns"></i>&nbsp;Vista KanBan
+            </a>
+        </div>
+        <div class="col-4 text-center">
+            <a asp-controller="ViewGantt" asp-action="Gantt" class="btn btn-danger">
+                <i class="fa-solid fa-chart-gantt"></i> Vista Gantt
+            </a>
+        </div>
+        <div class="col-4 text-center">
+            <div class="dropdown btn btn-outline-primary">
+                <a class="nav-link dropdown-toggle" href="#" id="GenerarReporteDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                    📑 Generar Reporte
+                </a>
+                <div class="dropdown-menu dropdown-menu-start" aria-labelledby="GenerarReporteDropdown">
+                    <div class="card-body p-2">
+                        <form id="formExportar" method="get" class="row g-3 align-items-center p-2">
+
+                            <label for="proyectoNombre" class="col-form-label">Seleccionar Proyecto:</label>
+                            <select id="proyectoNombre" name="proyectoNombre" class="form-select" required>
+                                <option value="">--</option>
+                                @foreach (var proyecto in (IEnumerable<SistemaProyectos.Models.Proyecto>)ViewData["ProyectosLista"])
+                                {
+                                    <option value="@proyecto.NombreProyecto">@proyecto.NombreProyecto</option>
+                                }
+                            </select>
+
+                            <label for="formato" class="col-form-label">Formato:</label>
+                            <select id="formato" name="formato" class="form-select">
+                                <option value="PDF">📕 PDF</option>
+                                <option value="Excel">📗 Excel</option>
+                            </select>
+
+                            <button type="button" class="btn btn-primary w-100" onclick="exportarReporte()">
+                                <i class="fa-solid fa-file-export"></i> Generar
+                            </button>
+
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <hr>
+    
+}
+
+<div class="row align-content-lg-end">
+    <div class="row align-items-center">
+        <div class="col-auto">
+            <p class="mb-0">
+                Total de Tareas: <strong>@ViewBag.TotalRegistros</strong>
+            </p>
+        </div>
+        <div class="col-auto">
+            <a asp-action="Index" asp-route-mias="true" class="btn btn-outline-dark btn-sm">
+                <i class="fa-solid fa-user-check"></i> Mis Tareas
+            </a>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-10">
+        <table id="tabla" class="table table-bordered table-hover">
+            <thead class="table-primary text-white">
+                <tr class="align-middle">
+                    <th>
+                        <label>Título</label>
+                    </th>
+                    <th>
+                        <label>Descripción</label>
+                    </th>
+                    <th>
+                        <label>Fecha de inicio</label>
+                    </th>
+                    <th>
+                        <label>Fecha de fin</label>
+                    </th>
+                    <th>
+                        <label>Proyecto</label>
+                    </th>
+                    <th>
+                        <label>Usuario responsable</label>
+                    </th>
+                    <th>
+                        <label>Prioridad</label>
+                    </th>
+                    <th>
+                        <label>Estado</label>
+                    </th>
+                    <th>
+                        <label>Fecha registro</label>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr onclick="obtenerIDCambiarColor(@item.TareaID, this)" class="align-middle">
+                        <td style="background-color: lightgrey">@Html.DisplayFor(modelItem => item.Titulo)</td>
+                        <td>@Html.DisplayFor(modelItem => item.Descripcion)</td>
+                        <td>@Html.DisplayFor(modelItem => item.FechaInicio)</td>
+                        <td>@Html.DisplayFor(modelItem => item.FechaFin)</td>
+                        <td>@Html.DisplayFor(modelItem => item.Proyecto.NombreProyecto) </td>
+                        <td>@Html.DisplayFor(modelItem => item.Usuario.NombreCompleto)</td>
+                        <td>@Html.DisplayFor(modelItem => item.Prioridad)</td>
+                        <td>
+                            @{
+                                string color;
+                                switch (item.Estado)
+                                {
+                                    case "Pendiente":
+                                        color = "secondary";
+                                        break;
+
+                                    case "En Progreso":
+                                        color = "warning";
+                                        break;
+                                    case "Finalizado":
+                                        color = "success";
+                                        break;
+                                    default:
+                                        color = "light";
+                                        break;
+                                }
+
+                            }
+                            <div class="d-flex align-content-center justify-content-center">
+                                <span class="rounded-pill p-2 bg-@(color) text-center px-3">@Html.DisplayFor(modelItem => item.Estado)</span>
+                            </div>
+                            
+
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.FechaRegistro)
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <div class="col-2">
+        
+        <div class="text-center mt-3 d-flex justify-content-center gap-2">
+            @if (User.IsInRole("Administrador"))
+            {
+                <a asp-action="Create" class="btn btn-success" style="width: 120px; height: 40px;">
+                    <i class="fa-solid fa-circle-plus"></i>&nbsp;Crear
+                </a>
+            }
+            
+        </div>
+        <div>
+            <partial name="Parcial/_Crud_Tareas" />
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <nav aria-label="Paginación de proyectos">
+        <ul class="pagination justify-content-center">
+
+
+            <li class="page-item @(ViewBag.PaginaActual == 1 ? "disabled" : "")">
+                <a class="page-link" asp-action="Index" asp-route-page="@(ViewBag.PaginaActual - 1)" asp-route-proyectoID="@ViewBag.ProyectoId" asp-route-busqueda="@ViewBag.Busqueda">&laquo;</a>
+            </li>
+
+            @for (int i = ViewBag.PaginaInicio; i <= ViewBag.PaginaFin; i++)
+            {
+                <li class="page-item @(i == ViewBag.PaginaActual ? "active" : "")">
+                    <a class="page-link" asp-action="Index" asp-route-page="@i" asp-route-proyectoID="@ViewBag.ProyectoId" asp-route-busqueda="@ViewBag.Busqueda">@i</a>
+                </li>
+            }
+
+            <li class="page-item @(ViewBag.PaginaActual == ViewBag.TotalPaginas ? "disabled" : "")">
+                <a class="page-link" asp-action="Index" asp-route-page="@(ViewBag.PaginaActual + 1)" asp-route-proyectoID="@ViewBag.ProyectoId" asp-route-busqueda="@ViewBag.Busqueda">&raquo;</a>
+            </li>
+
+        </ul>
+    </nav>
+</div>
+
+@section Scripts {
+    <script>
+
+                function obtenerIDCambiarColor(idSeleccionado, fila) {
+            const filas = document
+                .getElementById("tabla")
+                .getElementsByTagName("tbody")[0]
+                .getElementsByTagName("tr");
+
+            // Quitar selección previa
+            for (let i = 0; i < filas.length; i++) {
+                filas[i].classList.remove("table-active");
+            }
+
+            // Marcar nueva fila
+            fila.classList.add("table-active");
+
+            // Actualizar botones
+            const btnEditar = document.getElementById("btnEditar");
+            const btnDetalles = document.getElementById("btnDetalles");
+            const btnEliminar = document.getElementById("btnEliminar");
+
+            if (btnEditar) {
+                btnEditar.href = `/Tareas/Edit/${idSeleccionado}`;
+                btnEditar.classList.remove("disabled");
+            }
+            if (btnDetalles) {
+                btnDetalles.href = `/Tareas/Details/${idSeleccionado}`;
+                btnDetalles.classList.remove("disabled");
+            }
+            if (btnEliminar) {
+                btnEliminar.href = `/Tareas/Delete/${idSeleccionado}`;
+                btnEliminar.classList.remove("disabled");
+            }
+        }
+
+
+    </script>
+
+
+    <script>
+        function exportarReporte() {
+            const formato = document.getElementById("formato").value;
+            const proyectoNombre = document.getElementById("proyectoNombre").value;
+            const form = document.getElementById("formExportar");
+
+            if (!proyectoNombre) {
+                alert("Debes seleccionar un proyecto válido.");
+                return;
+            }
+
+            if (formato === "PDF") {
+                form.action = "/ReportesPDF/ProyectoConTareasPDF?proyectoNombre=" + encodeURIComponent(proyectoNombre);
+            } else {
+                form.action = "/ReportesExcel/ProyectoConTareasExcel?proyectoNombre=" + encodeURIComponent(proyectoNombre);
+            }
+
+            form.submit();
+        }
+    </script>
+}

@@ -1,0 +1,123 @@
+﻿@model SistemaProyectos.Models.Tarea
+
+@{
+    ViewData["Title"] = "Detalles de la tarea";
+}
+
+@section Styles {
+    <style>
+        body {
+            background-color: #E6E6FA;
+        }
+    </style>
+}
+
+<h1>@ViewData["Title"]</h1>
+<hr />
+
+<div class="row">
+
+    <div class="col-6 border-end border-dark">
+        <h4 class="text-center">Información de la tarea</h4>
+        <br />
+        <table class="table table-bordered table-striped">
+            <tbody>
+                <tr>
+                    <th class="bg-info text-white">Título</th>
+                    <td>@Model.Titulo</td>
+                </tr>
+                <tr>
+                    <th class="bg-info text-white">Descripción</th>
+                    <td>@Model.Descripcion</td>
+                </tr>
+                <tr>
+                    <th class="bg-info text-white">Estado</th>
+                    <td>@Model.Estado</td>
+                </tr>
+                <tr>
+                    <th class="bg-info text-white">Fecha inicio</th>
+                    <td>@Model.FechaInicio.ToString("dd/MM/yyyy")</td>
+                </tr>
+                <tr>
+                    <th class="bg-info text-white">Fecha fin</th>
+                    <td>@Model.FechaFin.ToString("dd/MM/yyyy")</td>
+                </tr>
+                <tr>
+                    <th class="bg-info text-white">Asignado a</th>
+                    <td>@Model.Usuario?.NombreCompleto</td>
+                </tr>
+                <tr>
+                    <th class="bg-info text-white">Prioridad</th>
+                    <td>@Model.Prioridad</td>
+                </tr>
+                <tr>
+                    <th class="bg-info text-white">Proyecto</th>
+                    <td>@Model.Proyecto?.NombreProyecto</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+
+    <div class="col-6">
+        <h4 class="text-center">Comentarios de la tarea</h4>
+        
+        <div class="text-end mt-3">
+            <a asp-action="Comentar" asp-route-tareaId="@Model.TareaID" class="btn btn-success">
+                <i class="fa-solid fa-comment"></i> Agregar Comentario
+            </a>
+        </div>
+        
+        <br />
+        <div class="table-responsive" style="height: 400px; overflow-y:auto;">
+            @foreach (var comment in Model.Comentarios)
+            {
+                <div class="box-shadow card shadow-lg container-fluid rounded border- mb-2">
+                    <div class="p-2 bg-light d-flex justify-content-between align-items-center rounded col">
+                        <div>
+                            <span class="rounded-pill bg-info-subtle p-1 fw-bold">
+                                <i class="fa-regular fa-circle-user"></i> @comment.Usuario.NombreCompleto
+                            </span>
+                            <span class="text-bg-light text-secondary p-1">
+                                @comment.FechaRegistro
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="card border-light box-shadow card rounded p-3">
+                        <span>@comment.Contenido</span>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+<hr />
+@if (User.IsInRole("Administrador"))
+{
+    <div class="text-center">
+        <a asp-action="Edit" asp-route-id="@Model.TareaID" class="btn btn-warning">
+            <i class="fa-solid fa-pen-to-square"></i> Editar
+        </a>
+    </div>
+}
+
+@{
+    var userId = int.Parse(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier).Value);
+}
+
+@if ((User.IsInRole("Administrador") && Model.UsuarioID == userId) ||
+    (User.IsInRole("Empleado") && Model.UsuarioID == userId))
+{
+    <form asp-action="MarcarFinalizada" asp-route-id="@Model.TareaID" method="post" class="text-center mt-3">
+        <button type="submit" class="btn btn-success">
+            <i class="fa-solid fa-check"></i> Marcar como Finalizada
+        </button>
+    </form>
+}
+
+<div class="col-2">
+    <a asp-action="Index" class="btn btn-dark">
+        <i class="fa-solid fa-backward"></i> Regresar
+    </a>
+</div>

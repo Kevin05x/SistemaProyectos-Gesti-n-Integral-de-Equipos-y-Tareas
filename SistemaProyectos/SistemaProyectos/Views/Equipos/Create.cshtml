@@ -1,0 +1,122 @@
+﻿@model SistemaProyectos.ViewModels.EquipoCreateViewModel
+
+@{
+    ViewData["Title"] = "Crear un equipo";
+}
+
+@section Styles {
+    <style>
+        body {
+            background-color: #E6E6FA;
+        }
+    </style>
+}
+
+<h1>@ViewData["Title"]</h1>
+
+
+<hr />
+<div class="row" style="display:block; justify-self: center;">
+    <div class="col-12" style="width: 600px;">
+        <h4 class="text-center">Información del equipo</h4>
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Equipo.NombreEquipo" class="control-label"></label>
+                <input asp-for="Equipo.NombreEquipo" class="form-control" />
+                <span asp-validation-for="Equipo.NombreEquipo" class="text-danger"></span>
+            </div>
+            <br />
+            <div class="form-group">
+                <label asp-for="Equipo.Descripcion" class="control-label"></label>
+                <textarea asp-for="Equipo.Descripcion" class="form-control" placeholder="Descripción de equipo"></textarea>
+                <span asp-validation-for="Equipo.Descripcion" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Equipo.FechaRegistro" hidden class="control-label"></label>
+                <input asp-for="Equipo.FechaRegistro" hidden class="form-control" placeholder=""/>
+                <span asp-validation-for="Equipo.FechaRegistro" hidden class="text-danger"></span>
+            </div>
+
+            <br />
+            <div>
+                <div class="row">
+                    <label>Miembros:</label>
+                </div>
+                <div class="row">
+                    <div class="col-9">
+                        <select class="form-select" asp-for="UsuarioSeleccionadoId" asp-items="Model.UsuariosDisponibles">
+                            <option value="">Selecciona usuarios</option>
+                        </select>
+                    </div>
+                    <div class="col-3">
+                        <button class="btn btn-info" name="action" value="Añadir" type="submit">
+                            <i class="fa-solid fa-plus"></i>&nbsp; Añadir
+                        </button>
+                    </div>
+                </div>
+                
+            </div>
+            <br />   
+            <div class="table-responsive" style="height: 250px;">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th class="bg-info">Nombre</th>
+                            <th class="bg-info">Correo</th>
+                            <th class="bg-info">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model.UsuariosSeleccionados != null && Model.UsuariosSeleccionados.Any())
+                        {
+                            for (int i = 0; i < Model.UsuariosSeleccionados.Count; i++)
+                            {
+                                <tr>
+                                    <td style="background: lightgray;">@Model.UsuariosSeleccionados[i].NombreCompleto</td>
+                                    <td>@Model.UsuariosSeleccionados[i].Correo</td>
+                                    <td>
+                                        <button type="submit" name="action" value="eliminar-@Model.UsuariosSeleccionados[i].UsuarioID" class="btn btn-danger btn-sm">
+                                            <i class="fa-solid fa-minus"></i>&nbsp; Eliminar
+                                        </button>
+                                    </td>
+                                </tr>
+
+                                <!-- Campos ocultos para persistir la lista -->
+                                <input type="hidden" name="UsuariosSeleccionados[@i].UsuarioID" value="@Model.UsuariosSeleccionados[i].UsuarioID" />
+                                <input type="hidden" name="UsuariosSeleccionados[@i].NombreCompleto" value="@Model.UsuariosSeleccionados[i].NombreCompleto" />
+                                <input type="hidden" name="UsuariosSeleccionados[@i].Correo" value="@Model.UsuariosSeleccionados[i].Correo" />
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="3" class="text-center">No hay usuarios añadidos</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+            <hr />
+            <div class="form-group text-center">
+                <button type="submit" name="action" value="Crear" class="btn btn-primary">
+                    <i class="fa-solid fa-floppy-disk"></i>&nbsp; Crear
+                </button>
+            </div>
+            <div asp-validation-summary="All"></div>
+        </form>
+    </div>
+</div>
+<div>
+    <a class="btn btn-dark" asp-action="Index">
+        <i class="fa-solid fa-backward"></i>&nbsp; Regresar
+    </a>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

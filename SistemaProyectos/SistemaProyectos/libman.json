@@ -1,0 +1,66 @@
+{
+  "version": "3.0",
+  "defaultProvider": "unpkg",
+  "libraries": [
+    {
+      "library": "@fortawesome/fontawesome-free@7.0.0",
+      "destination": "wwwroot/fortawesome/fontawesome-free/",
+      "files": [
+        "css/all.css",
+        "css/all.min.css",
+        "css/brands.css",
+        "css/brands.min.css",
+        "css/fontawesome.css",
+        "css/fontawesome.min.css",
+        "css/regular.css",
+        "css/regular.min.css",
+        "css/solid.css",
+        "css/solid.min.css",
+        "css/svg-with-js.css",
+        "css/svg-with-js.min.css",
+        "css/svg.css",
+        "css/svg.min.css",
+        "css/v4-font-face.css",
+        "css/v4-font-face.min.css",
+        "css/v4-shims.css",
+        "css/v4-shims.min.css",
+        "css/v5-font-face.css",
+        "css/v5-font-face.min.css",
+        "LICENSE.txt",
+        "package.json",
+        "webfonts/fa-brands-400.woff2",
+        "webfonts/fa-regular-400.woff2",
+        "webfonts/fa-solid-900.woff2",
+        "webfonts/fa-v4compatibility.woff2",
+        "README.md"
+      ]
+    },
+    {
+      "library": "@fortawesome/fontawesome-free@6.1.1",
+      "destination": "wwwroot/fortawesome/fontawesome-free/",
+      "files": [
+        "css/all.css",
+        "css/all.min.css",
+        "css/brands.css",
+        "css/brands.min.css",
+        "css/fontawesome.css",
+        "css/fontawesome.min.css",
+        "css/regular.css",
+        "css/regular.min.css",
+        "css/solid.css",
+        "css/solid.min.css",
+        "css/svg-with-js.css",
+        "css/svg-with-js.min.css",
+        "css/v4-font-face.css",
+        "css/v4-font-face.min.css",
+        "css/v4-shims.css",
+        "css/v4-shims.min.css",
+        "css/v5-font-face.css",
+        "css/v5-font-face.min.css",
+        "attribution.js",
+        "LICENSE.txt",
+        "package.json"
+      ]
+    }
+  ]
+}

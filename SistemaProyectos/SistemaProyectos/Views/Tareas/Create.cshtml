@@ -1,0 +1,188 @@
+﻿@model SistemaProyectos.Models.Tarea
+
+@{
+    ViewData["Title"] = "Crear tareas";
+    var tareasAcumuladas = ViewBag.TareasAcumuladas as List<SistemaProyectos.Models.Tarea>;
+}
+
+@section Styles {
+    <style>
+        body {
+            background-color: #E6E6FA;
+        }
+    </style>
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<hr />
+<div class="row">
+    <div class="col-6 border-end border-black" style="width: 600px;">
+        <h4 class="text-center">Información de la tarea</h4>
+        <form asp-action="Acumular" method="post">
+
+            <input type="hidden" asp-for="TareaID" />
+
+            <div class="form-group">
+                <label asp-for="Titulo" class="control-label"></label>
+                <input asp-for="Titulo" class="form-control" placeholder="Ingrese título de la tarea" />
+                <span asp-validation-for="Titulo" class="text-danger"></span>
+            </div>
+            <br />
+
+            <div class="row">
+                <div class="form-group col-6">
+                    <label asp-for="Descripcion" class="control-label"></label>
+                    <textarea asp-for="Descripcion" class="form-control" placeholder="Descripción de la tarea" style="height: 120px;"></textarea>
+                    <span asp-validation-for="Descripcion" class="text-danger"></span>
+                </div>
+                <div class="col-6 form-group">
+                    <div class="form-group">
+                        <label asp-for="FechaInicio" class="control-label"></label>
+                        <input asp-for="FechaInicio" value="@(Model != null && Model.FechaInicio != DateTime.MinValue ? Model.FechaInicio.ToString("yyyy-MM-dd") : "")" type="date" class="form-control" />
+                        <span asp-validation-for="FechaInicio" class="text-danger"></span>
+                    </div>
+                    <br />
+
+                    <div class="form-group">
+                        <label asp-for="FechaFin" class="control-label"></label>
+                        <input asp-for="FechaFin" value="@(Model != null && Model.FechaFin != DateTime.MinValue ? Model.FechaFin.ToString("yyyy-MM-dd") : "")" type="date" class="form-control" />
+                        <span asp-validation-for="FechaFin" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+            
+            <br />
+
+            <div class="row">
+                <div class="form-group col-6">
+                    <label asp-for="ProyectoID" class="control-label">Proyecto</label>
+                    <select asp-for="ProyectoID" class="form-select" asp-items="ViewBag.Proyectos">
+                        <option value="">Seleccione un proyecto</option>
+                    </select>
+                    <span asp-validation-for="ProyectoID" class="text-danger"></span>
+                </div>
+
+                <div class="form-group col-6">
+                    <label asp-for="UsuarioID" class="control-label">Usuario Encargado</label>
+                    <select asp-for="UsuarioID" class="form-select" asp-items="ViewBag.Usuarios">
+                        <option value="">Seleccione un usuario</option>
+                    </select>
+                    <span asp-validation-for="UsuarioID" class="text-danger"></span>
+                </div>
+            </div>
+            <br />
+
+            <div class="form-group">
+                <label asp-for="Estado" hidden class="control-label">Estado</label>
+                <input asp-for="Estado" hidden value="" />
+                <span asp-validation-for="Estado" hidden class="text-danger"></span>
+            </div>
+
+            <div class="row">
+                <div class="form-group col-6">
+                    <label asp-for="Prioridad" class="control-label">Prioridad</label>
+                    <select asp-for="Prioridad" class="form-select">
+                        <option value="">Seleccione una prioridad</option>
+                        <option value="Alta">Alta</option>
+                        <option value="Media">Media</option>
+                        <option value="Baja">Baja</option>
+                    </select>
+                    <span asp-validation-for="Prioridad" class="text-danger"></span>
+                </div>
+            </div>
+            <br />
+
+            <div class="form-group text-center">
+                <button type="submit" class="btn @(ViewBag.ModoEdicion == true ? "btn-warning" : "btn-primary")">
+                    <i class="fa-solid fa-plus"></i> @(ViewBag.ModoEdicion == true ? "Guardar" : "Añadir") <i class="fa-solid fa-pen"></i>
+                </button>
+            </div>
+
+        </form>
+    </div>
+    <div class="col-6">
+
+        <h4 class="text-center">Tareas acumuladas</h4>
+        <br />
+        @if (tareasAcumuladas != null && tareasAcumuladas.Any())
+        {
+            <table class="table table-bordered">
+                <thead class="align-middle">
+                    <tr >
+                        <th class="bg-info">Título</th>
+                        <th class="bg-info">Descripción</th>
+                        <th class="bg-info">Fecha Inicio</th>
+                        <th class="bg-info">Fecha Fin</th>
+                        <th class="bg-info">Prioridad</th>
+                        <th class="bg-info">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var tarea in ViewBag.TareasAcumuladas)
+                    {
+                        <tr class="align-middle">
+                            <td >@tarea.Titulo</td>
+                            <td>@tarea.Descripcion</td>
+                            <td>@tarea.FechaInicio.ToShortDateString()</td>
+                            <td>@tarea.FechaFin.ToShortDateString()</td>
+                            <td>@tarea.Prioridad</td>
+                            <td>
+                                <a asp-action="Editar" asp-route-id="@tarea.TareaID" class="btn btn-warning btn-sm">
+                                    <i class="fa-solid fa-pen"></i>&nbsp; Editar
+                                </a>
+                                <form asp-action="Eliminar" asp-route-id="@tarea.TareaID" method="post" style="display:inline">
+                                    <button type="submit" class="btn btn-danger btn-sm">
+                                        <i class="fa-solid fa-minus"></i>&nbsp; Eliminar
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+        else
+        {
+            <br />
+            <div class="text-center">
+                <label >No hay tareas asignadas</label>
+            </div>
+            
+        }
+    </div>
+</div>
+
+<hr />
+<div class="row">
+
+    <div class="col-2">
+        <a asp-action="Index" class="btn btn-dark">
+            <i class="fa-solid fa-backward"></i>&nbsp; Regresar
+        </a>
+    </div>
+
+    <div class="col-2">
+        <form asp-action="SaveAll" method="post">
+            <button type="submit" class="btn btn-success">
+                <i class="fa-solid fa-floppy-disk"></i>&nbsp; Guardar tareas
+            </button>
+            
+        </form>
+    </div>
+    <div class="col-8">
+        @if (ViewBag.MensajeError != null)
+        {
+            <label class="text-danger">
+                @ViewBag.MensajeError
+            </label>
+        }
+    </div>
+    
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

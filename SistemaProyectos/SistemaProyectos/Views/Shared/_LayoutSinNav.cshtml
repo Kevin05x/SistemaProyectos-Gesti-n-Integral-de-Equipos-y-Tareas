@@ -1,0 +1,58 @@
+﻿@*
+    Layout para paginas como Login, Registro, que no necesitan la barra de navegación.   
+*@
+@{
+    <!DOCTYPE html>
+    <html lang="es">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>@ViewData["Title"] - SistemaProyectos</title>
+        <link rel="stylesheet" href="~/lib/fortawesome/fontawesome-free/css/all.css" />
+        <link rel="stylesheet" href="~/css/custom.css" />
+        <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+        <link rel="stylesheet" href="~/SistemaProyectos.styles.css" asp-append-version="true" />
+
+        <style>
+            .bg-fondo {
+                background-image: url('/Resources/FondoAbs.png');
+                background-size: cover;
+                background-position: center;
+                background-repeat: no-repeat;
+                backdrop-filter: blur(6px); /* Difumina el fondo */
+                min-height: 100vh;
+                position: relative;
+            }
+
+                /* Opcional: oscurecer el fondo para mejor contraste */
+                .bg-fondo::before {
+                    content: "";
+                    position: absolute;
+                    inset: 0;
+                    background-color: rgba(0, 0, 0, 0.4);
+                    z-index: 0;
+                }
+
+            /* Asegura que el contenido esté por encima del fondo */
+            .card {
+                position: relative;
+                z-index: 1;
+            }
+        </style>
+    
+    </head>
+    <body>
+        
+        <div class="container">
+            <main role="main" class="pb-3">
+                @RenderBody()
+            </main>
+        </div>
+
+        <script src="~/lib/jquery/dist/jquery.min.js"></script>
+        <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+        <script src="~/js/site.js" asp-append-version="true"></script>
+        @await RenderSectionAsync("Scripts", required: false)
+    </body>
+    </html>
+}

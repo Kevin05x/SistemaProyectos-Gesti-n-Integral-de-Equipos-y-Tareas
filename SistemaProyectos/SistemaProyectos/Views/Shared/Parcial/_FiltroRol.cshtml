@@ -1,0 +1,18 @@
+﻿@model string
+
+<form method="get" class="d-flex">
+    <div class="col-8">
+        <select name="rol" style="background-color: #FFB74D; color: white;" class="form-select">
+            <option value="">Todos</option>
+            @foreach (var pr in ViewBag.Roles as List<string>)
+            {
+                <option value="@pr" selected="@(ViewBag.RolSeleccionado == pr ? "selected" : null)">
+                    @pr
+                </option>
+            }
+        </select>
+    </div>
+    <div class="col-3">
+        <button type="submit" class="btn btn-danger">Filtrar</button>
+    </div>
+</form>

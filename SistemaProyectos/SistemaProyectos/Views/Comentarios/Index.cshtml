@@ -1,0 +1,119 @@
+﻿@model IEnumerable<SistemaProyectos.Models.Comentario>
+
+@{
+    ViewData["Title"] = "Comentarios";
+}
+
+@section Styles {
+    <style>
+        body {
+            background-color: #E6E6FA;
+        }
+    </style>
+}
+
+<h1>@ViewData["Title"]</h1>
+<hr />
+
+<div class="row">
+
+    <div class="col-3 text-center">
+        <label class="text-start d-block">Filtrar por tarea</label>
+        <partial name="Parcial/_FiltroTarea" model="ViewBag.TareaSeleccionada" />
+    </div>
+    <div class="col-3 text-center">
+        <label class="text-start d-block">Búsqueda por nombre completo</label>
+        <partial name="Parcial/_Busqueda" model="ViewBag.Busqueda" />
+    </div>
+    <div class="col-3 d-flex justify-content-center align-items-center">
+        <a asp-action="Index" class="btn btn-secondary">Limpiar filtros</a>
+    </div>
+</div>
+<hr />
+
+<div class="row align-content-lg-end">
+    <p>Total de Comentarios: <strong>@ViewBag.TotalRegistros</strong></p>
+</div>
+
+<div class="row">
+    <div class="col-10">
+        <table id="tabla" class="table table-bordered table-hover" border="1">
+            <thead class="text-primary table-primary">
+                <tr class="align-middle">
+                    <th>Nombre completo de usuario</th>
+                    <th>Contenido</th>
+                    <th>Tarea</th>
+                    <th>Fecha de Registro</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr onclick="obtenerIDCambiarColor(@item.ComentarioID, this)" class="align-middle">
+                        <td style="background-color: lightgrey">
+                            @Html.DisplayFor(modelItem => item.Usuario.NombreCompleto)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Contenido)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Tarea.Titulo)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.FechaRegistro)
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <div class="col-2 text-center">
+        <div>
+            <a id="btnEliminar" class="btn btn-dark text-white" style="width: 120px; height: 40px;" href="#">
+                <i class="fa-solid fa-circle-minus"></i>&nbsp;Eliminar
+            </a>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <nav aria-label="Paginación de Comentarios">
+        <ul class="pagination justify-content-center">
+            <li class="page-item @(ViewBag.PaginaActual == 1 ? "disabled" : "")">
+                <a class="page-link" asp-action="Index" asp-route-page="@(ViewBag.PaginaActual - 1)">&laquo;</a>
+            </li>
+
+            @for (int i = ViewBag.PaginaInicio; i <= ViewBag.PaginaFin; i++)
+            {
+                <li class="page-item @(i == ViewBag.PaginaActual ? "active" : "")">
+                    <a class="page-link" asp-action="Index" asp-route-page="@i">@i</a>
+                </li>
+            }
+
+            <li class="page-item @(ViewBag.PaginaActual == ViewBag.TotalPaginas ? "disabled" : "")">
+                <a class="page-link" asp-action="Index" asp-route-page="@(ViewBag.PaginaActual + 1)">&raquo;</a>
+            </li>
+        </ul>
+    </nav>
+</div>
+
+<script>
+    function obtenerIDCambiarColor(idSeleccionado, fila) {
+        const filas = document
+            .getElementById("tabla")
+            .getElementsByTagName("tbody")[0]
+            .getElementsByTagName("tr");
+
+        // Quitar selección previa
+        for (let i = 0; i < filas.length; i++) {
+            filas[i].classList.remove("table-active");
+        }
+
+        // Marcar nueva fila con estilo Bootstrap
+        fila.classList.add("table-active");
+
+        // Actualizar botones
+        document.getElementById("btnEliminar").href = `/Comentarios/Delete/${idSeleccionado}`;
+    }
+</script>

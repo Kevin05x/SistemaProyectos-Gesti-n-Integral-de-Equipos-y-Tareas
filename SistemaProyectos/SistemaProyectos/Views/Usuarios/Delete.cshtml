@@ -1,0 +1,65 @@
+﻿@model SistemaProyectos.Models.Usuario
+
+@{
+    ViewData["Title"] = "Eliminar un usuario";
+}
+
+@section Styles {
+    <style>
+        body {
+            background-color: #E6E6FA;
+        }
+    </style>
+}
+
+<h1>@ViewData["Title"]</h1>
+<hr />
+<h4 class="text-center text-danger">¿Estás seguro que deseas eliminar este usuario?</h4>
+<div class="text-center">
+    <label>El usuario se eliminará junto con sus comentarios y tareas correspondientes</label>
+</div>
+<hr />
+<h4 class="text-center">Información del usuario</h4>
+<div class="row" style="display:block; justify-self: center;">
+    <div>
+        <br />
+        <table class="table table-bordered table-striped">
+            <tbody>
+                <tr>
+                    <th class="bg-info text-white">@Html.DisplayNameFor(model => model.NombreUsuario)</th>
+                    <td>@Html.DisplayFor(model => model.NombreUsuario)</td>
+                </tr>
+                <tr>
+                    <th class="bg-info text-white">@Html.DisplayNameFor(model => model.NombreCompleto)</th>
+                    <td>@Html.DisplayFor(model => model.NombreCompleto)</td>
+                </tr>
+                <tr>
+                    <th class="bg-info text-white">@Html.DisplayNameFor(model => model.Correo)</th>
+                    <td>@Html.DisplayFor(model => model.Correo)</td>
+                </tr>
+                <tr>
+                    <th class="bg-info text-white">@Html.DisplayNameFor(model => model.Rol)</th>
+                    <td>@Html.DisplayFor(model => model.Rol)</td>
+                </tr>
+                <tr>
+                    <th class="bg-info text-white">@Html.DisplayNameFor(model => model.FechaRegistro)</th>
+                    <td>@Html.DisplayFor(model => model.FechaRegistro)</td>
+                </tr>
+            </tbody>
+        </table>
+        <hr />
+        <div class="text-center">
+            <form asp-action="Delete">
+                <input type="hidden" asp-for="UsuarioID" />
+                <button type="submit" class="btn btn-danger">
+                    <i class="fa-solid fa-trash"></i>&nbsp; Eliminar
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+<div class="row" style="display:block; justify-self: left;">
+    <a asp-action="Index" class="btn btn-dark">
+        <i class="fa-solid fa-backward"></i>&nbsp; Regresar
+    </a>
+</div>

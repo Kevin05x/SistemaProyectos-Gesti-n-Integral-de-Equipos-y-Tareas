@@ -1,0 +1,18 @@
+﻿@model string
+
+<form method="get" class="d-flex">
+    <div class="col-8">
+        <select name="equipo" style="background-color: #6CA6CD; color: white;" class="form-select">
+            <option value="">Todos</option>
+            @foreach (var eq in ViewBag.Equipos as List<string>)
+            {
+                <option value="@eq" selected="@(ViewBag.EquipoSeleccionado == eq ? "selected" : null)">
+                    @eq
+                </option>
+            }
+        </select>
+    </div>
+    <div class="col-3">
+        <button type="submit" class="btn btn-info">Filtrar</button>
+    </div>
+</form>

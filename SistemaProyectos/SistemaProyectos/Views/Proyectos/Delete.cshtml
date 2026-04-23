@@ -1,0 +1,110 @@
+﻿@model SistemaProyectos.Models.Proyecto
+
+@{
+    ViewData["Title"] = "Eliminar un proyecto";
+}
+
+@section Styles {
+    <style>
+        body {
+            background-color: #E6E6FA;
+        }
+    </style>
+}
+
+<h1>@ViewData["Title"]</h1>
+<hr />
+<h2 class="text-center text-danger">¿Seguro que quieres eliminar el proyecto?</h2>
+<div class="text-center">
+    <label>El proyecto se eliminará con sus tareas y comentarios correspondientes</label>
+</div>
+<hr />
+<div class="row">
+    <div class="col-6 border-end border-black">
+        <h4 class="text-center">Información del proyecto</h4>
+        
+        <table class="table table-bordered table-striped">
+            <tbody>
+                <tr>
+                    <th class="bg-info text-white">@Html.DisplayNameFor(model => model.NombreProyecto)</th>
+                    <td>@Html.DisplayFor(model => model.NombreProyecto)</td>
+                </tr>
+                <tr>
+                    <th class="bg-info text-white">@Html.DisplayNameFor(model => model.Descripcion)</th>
+                    <td>@Html.DisplayFor(model => model.Descripcion)</td>
+                </tr>
+                <tr>
+                    <th class="bg-info text-white">@Html.DisplayNameFor(model => model.FechaInicio)</th>
+                    <td>@Html.DisplayFor(model => model.FechaInicio)</td>
+                </tr>
+                <tr>
+                    <th class="bg-info text-white">@Html.DisplayNameFor(model => model.FechaFin)</th>
+                    <td>@Html.DisplayFor(model => model.FechaFin)</td>
+                </tr>
+                <tr>
+                    <th class="bg-info text-white">@Html.DisplayNameFor(model => model.Estado)</th>
+                    <td>@Html.DisplayFor(model => model.Estado)</td>
+                </tr>
+                <tr>
+                    <th class="bg-info text-white">Equipo:</th>
+                    <td>@ViewBag.NombreEquipo</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="col-6">
+        <h4 class="text-center">Tareas del proyecto</h4>
+        
+        <div class ="table-responsive col-12" style="height: 500px;">
+            <table class="table table-bordered table-striped">
+                <thead class="bg-info text-white align-middle">
+                    <tr>
+                        <th class="bg-info">Tarea</th>
+                        <th class="bg-info">Descripción</th>
+                        <th class="bg-info">Estado</th>
+                        <th class="bg-info">Prioridad</th>
+                        <th class="bg-info">Usuario Responsable</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{
+                        var listaTareas = ViewBag.ListaTareas;
+                    }
+                    @if (listaTareas != null)
+                    {
+                        foreach (var tarea in listaTareas)
+                        {
+                            <tr>
+                                <td>@tarea.Titulo</td>
+                                <td>@tarea.Descripcion</td>
+                                <td>@tarea.Estado</td>
+                                <td>@tarea.Prioridad</td>
+                                <td>@tarea.Usuario.NombreCompleto</td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+        
+    </div>
+</div>
+<hr />
+<div class="text-center">
+    <form asp-action="Delete" >
+        <input type="hidden" asp-for="ProyectoID" />
+        <button type="submit" class="btn btn-danger">
+            Eliminar <i class="fa-solid fa-trash"></i>
+        </button>
+    </form>
+</div>
+
+<div class="row">
+    <div class="col-2">
+        <a asp-action="Index" class="btn btn-dark">
+            <i class="fa-solid fa-backward"></i> Regresar
+        </a>
+    </div>
+    
+</div>
